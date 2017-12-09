@@ -3,67 +3,121 @@ function Test(questions){
 }
 
 Test.prototype.generateAllQuestions = function (){
-  for (var question in this.questions) {
-    var oneOfTheQuestions = this.questions[question];
-    if (!this.questions.hasOwnProperty(question)) continue;
-    this.wrapQuestion (oneOfTheQuestions);
-    this.generateBr();
+  this.questions.forEach(element=>{
+    buildQuestion(element);
+    console.log('buclebuildquiestion')
+  })
+}
+
+function buildQuestion(element){
+  let hasQuestionMoreThanOneCorrectAnswer = checkIfQuestionHasMoreThanOneCorrectAnswer(element);
+
+  let questionContainerHtml = generateQuestionContainerHtml(element.question.number);
+  let questionHtml = generateQuestionHtml(element.question);
+
+  questionContainerHtml.appendChild(questionHtml);
+
+
+  if(hasQuestionMoreThanOneCorrectAnswer==true){
+    console.log('mas de una correcta')
+    var answers = generateCheckboxAnswer(element.answers,element.question.number);
+  }else{
+    console.log('solo una correcta')
+    var answers = generateRadioAnswer(element.answers,element.question.number);
+  }
+  questionContainerHtml.appendChild(answers);
+  appendToBody(questionContainerHtml);
+
+}
+
+function generateRadioAnswer(answers,questionNumber){
+  var answersContainer = document.createElement('div');
+  answersContainer.setAttribute('class','answersContainer');
+
+  answers.forEach(answer=>{
+    var answerContainer = document.createElement('div');
+    answerContainer.setAttribute('class','answerContainer');
+
+    let radio = document.createElement('input');
+    radio.setAttribute('type','radio');
+    radio.setAttribute('name','question_'+questionNumber);
+    radio.setAttribute('id','question_'+questionNumber+'_answer_'+answer.number);
+
+    let label = document.createElement('label');
+    label.setAttribute('class','answer');
+    label.setAttribute('for','question_'+questionNumber+'_answer_'+answer.number);
+    label.innerHTML = answer.text;
+
+    answerContainer.appendChild(radio);
+    answerContainer.appendChild(label);
+    answersContainer.appendChild(answerContainer);
+  })
+
+  return answersContainer;
+}
+
+function generateCheckboxAnswer(answers,questionNumber){
+  var answersContainer = document.createElement('div');
+  answersContainer.setAttribute('class','answersContainer');
+
+  answers.forEach(answer=>{
+    var answerContainer = document.createElement('div');
+    answerContainer.setAttribute('class','answerContainer');
+
+    let checkbox = document.createElement('input');
+    checkbox.setAttribute('type','checkbox');
+    checkbox.setAttribute('id','question_'+questionNumber+'_answer_'+answer.number);
+
+
+    let label = document.createElement('label');
+    label.setAttribute('class','answer');
+    label.setAttribute('for','question_'+questionNumber+'_answer_'+answer.number);
+    label.innerHTML = answer.text;
+
+    answerContainer.appendChild(checkbox);
+    answerContainer.appendChild(label);
+    answersContainer.appendChild(answerContainer);
+  })
+  return answersContainer;
+}
+
+function generateQuestionHtml(question){
+  let questionHtml = document.createElement('p');
+  questionHtml.setAttribute('class','question');
+  questionHtml.innerHTML = question.text;
+  return questionHtml;
+}
+
+function generateQuestionContainerHtml(numberOfQuestion){
+  let questionContainer = document.createElement('div');
+  questionContainer.setAttribute('class','questionContainer');
+  questionContainer.setAttribute('id','question_'+numberOfQuestion);
+  return questionContainer;
+}
+
+function checkIfQuestionHasMoreThanOneCorrectAnswer(question){
+  let onlyOneCorrectAnswer = 1;
+  let correctAnswers = numberOfTrueAnswers(question);
+
+  if (correctAnswers > onlyOneCorrectAnswer){
+    return true;
+  }else{
+    return false;
   }
 }
 
-Test.prototype.wrapQuestion = function ( question ){
-  this.generateQuestion(question);
-  this.generateAnswers(question.number,question.answers);
+function numberOfTrueAnswers(question){
+  var countOfTrueAnswers = 0;
+  question.answers.forEach(answer=>{
+    if(answer.isCorrect.toLowerCase()=='true'){
+      countOfTrueAnswers++;
+    }
+  })
+  console.log('countOfTrueAnswers',countOfTrueAnswers);
+  return countOfTrueAnswers;
 }
 
-Test.prototype.generateQuestion = function(question){
-  let questionDiv = document.createElement('div');
-  let questionSpan = document.createElement('span');
-
-  questionSpan.innerHTML = question.question;
-  questionDiv.appendChild(questionSpan);
-  this.appendToBody(questionDiv);
-}
-
-Test.prototype.generateAnswers = function (questionNumber,answers){
-  for (var answer in answers) {
-    var answerName = answer;
-    var oneOfTheAnswers = answers[answer];
-
-    if (!answers.hasOwnProperty(answer)) continue;
-
-    this.generateAnswerInput(questionNumber,oneOfTheAnswers.text,answerName);
-    this.generateAnswerLabel(questionNumber,oneOfTheAnswers.text,answerName);
-    this.generateBr();
-  }
-}
-
-Test.prototype.generateBr = function (){
-  let br = document.createElement('br');
-  this.appendToBody(br);
-}
-
-Test.prototype.generateAnswerLabel = function (questionNumber,answerText,answerName){
-  let questionLabel = document.createElement('label');
-  questionLabel.setAttribute('for','question_' + questionNumber + '_' + answerName);
-  questionLabel.innerHTML = answerText;
-  this.appendToBody(questionLabel);
-}
-
-Test.prototype.generateAnswerInput = function (questionNumber,answerValue,answerName){
-  let answerDiv = document.createElement('div');
-  let questionRadio = document.createElement('input');
-
-  questionRadio.setAttribute('type', 'radio');
-  questionRadio.setAttribute('name', 'question_' + questionNumber + '_' + answerName);
-  questionRadio.setAttribute('id', 'question_' + questionNumber + '_' + answerName);
-
-  questionRadio.value = answerValue;
-  answerDiv.appendChild(questionRadio);
-  this.appendToBody(questionRadio);
-}
-
-Test.prototype.appendToBody = function (element){
+function appendToBody(element){
   document.body.appendChild(element);
 }
 

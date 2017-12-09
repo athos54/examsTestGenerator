@@ -16,6 +16,16 @@ function QuestionsFile(){
     generateFileFormButton();
   }
 
+  QuestionsFile.prototype.deleteFileForm = function (){
+    body = document.body
+    label = document.querySelector('#filelabel');
+    input = document.querySelector('#fileinput');
+    button = document.querySelector('#filebutton');
+    body.removeChild(label);
+    body.removeChild(input);
+    body.removeChild(button);
+  }
+
   QuestionsFile.prototype.getQuestions = function (){
     return questionObject;
   }
@@ -34,12 +44,14 @@ function QuestionsFile(){
 
   function generateFileFormLabel (){
     let label = document.createElement('label');
+    label.setAttribute('id','filelabel');
     label.innerHTML = 'Select question csv file: ';
     appendToBody(label);
   }
 
   function generateFileFormButton (){
     let button = document.createElement('button');
+    button.setAttribute('id','filebutton');
     button.innerHTML = 'Generate Test';
     button.addEventListener('click', loadFile.bind(this), false);
     appendToBody(button);
@@ -64,8 +76,8 @@ function QuestionsFile(){
     textResultArray.forEach((line,index)=>{
       let firstLine = 0;
       if(index != firstLine){
-        let lineArray = convertStringCsvOnArray(line);
-        checkLineType(lineArray);
+        let lineObject = convertStringCsvOnArray(line);
+        checkLineType(lineObject);
       }
       markProcessAsFinished(textResultArray.length,index);
     })
@@ -84,14 +96,21 @@ function QuestionsFile(){
 
   function convertStringCsvOnArray (string){
     let textResultArray = string.split(",");
-    return textResultArray;
+    let textResultObject = {
+      type: textResultArray[0],
+      number: textResultArray[1],
+      text: textResultArray[2],
+      isCorrect: textResultArray[3]
+    };
+
+    return textResultObject;
   }
 
-  function checkLineType (lineArray){
-    if(thisLineIsQuery(lineArray)){
-      addNewQuestionToQuestionsObject(lineArray);
-    }else if(thisLineIsAnswer(lineArray)){
-      addNewAnswerToQuestion(lineArray);
+  function checkLineType (lineObject){
+    if(thisLineIsQuery(lineObject)){
+      addNewQuestionToQuestionsObject(lineObject);
+    }else if(thisLineIsAnswer(lineObject)){
+      addNewAnswerToQuestion(lineObject);
     }
   }
 
@@ -112,7 +131,7 @@ function QuestionsFile(){
   }
 
   function thisLineIsQuery (line){
-    if (line[0]=='query'){
+    if (line.type=='query'){
       return true;
     }else{
       return false;
@@ -120,7 +139,7 @@ function QuestionsFile(){
   }
 
   function thisLineIsAnswer (line){
-    if(line[0]=='answer'){
+    if(line.type=='answer'){
       return true;
     }else{
       return false;

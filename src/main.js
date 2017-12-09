@@ -14,9 +14,10 @@ let waitingForFinish = setInterval(()=>{
     let questions = file.getQuestions();
     console.log('Here you are the questions object');
     console.log(questions);
+    var test = new Test(questions);
+    test.generateAllQuestions(questions);
+    file.deleteFileForm();
+
     clearInterval(waitingForFinish);
   }
 },100);
-
-// var test = new Test(questions);
-// test.generateAllQuestions(questions);
