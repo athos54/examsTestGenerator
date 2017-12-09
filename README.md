@@ -34,9 +34,8 @@ Note: First line will be removed.
 
 * Then, open index.html file with your browser, select your csv an do click on `Generate Test` button.
 
-While program will not be finished, you have to open browser devtools to see things.
 
-![how-to-use](how-to-use.gif)
+![how-to-use](how-to-use2.gif)
 
 
 ## For dev
