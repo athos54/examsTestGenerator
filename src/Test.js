@@ -5,80 +5,72 @@ function Test(questions){
 Test.prototype.generateAllQuestions = function (){
   this.questions.forEach(element=>{
     buildQuestion(element);
-    console.log('buclebuildquiestion')
   })
 }
 
 function buildQuestion(element){
-  let hasQuestionMoreThanOneCorrectAnswer = checkIfQuestionHasMoreThanOneCorrectAnswer(element);
-
   let questionContainerHtml = generateQuestionContainerHtml(element.question.number);
-  let questionHtml = generateQuestionHtml(element.question);
 
+  let questionHtml = generateQuestionHtml(element.question);
   questionContainerHtml.appendChild(questionHtml);
 
-
-  if(hasQuestionMoreThanOneCorrectAnswer==true){
-    console.log('mas de una correcta')
-    var answers = generateCheckboxAnswer(element.answers,element.question.number);
-  }else{
-    console.log('solo una correcta')
-    var answers = generateRadioAnswer(element.answers,element.question.number);
-  }
+  let answers = generateAnswersHtml(element);
   questionContainerHtml.appendChild(answers);
+
   appendToBody(questionContainerHtml);
-
 }
 
-function generateRadioAnswer(answers,questionNumber){
+function generateAnswersHtml(element){
+  let hasQuestionMoreThanOneCorrectAnswer = checkIfQuestionHasMoreThanOneCorrectAnswer(element);
+  if(hasQuestionMoreThanOneCorrectAnswer==true){
+    var answers = generateAnswerPackage(element.answers,element.question.number,'checkbox');
+  }else{
+    var answers = generateAnswerPackage(element.answers,element.question.number,'radio');
+  }
+  return answers;
+}
+
+function generateAnswerPackage(answers,questionNumber,type){
   var answersContainer = document.createElement('div');
   answersContainer.setAttribute('class','answersContainer');
 
   answers.forEach(answer=>{
-    var answerContainer = document.createElement('div');
-    answerContainer.setAttribute('class','answerContainer');
-
-    let radio = document.createElement('input');
-    radio.setAttribute('type','radio');
-    radio.setAttribute('name','question_'+questionNumber);
-    radio.setAttribute('id','question_'+questionNumber+'_answer_'+answer.number);
-
-    let label = document.createElement('label');
-    label.setAttribute('class','answer');
-    label.setAttribute('for','question_'+questionNumber+'_answer_'+answer.number);
-    label.innerHTML = answer.text;
-
-    answerContainer.appendChild(radio);
-    answerContainer.appendChild(label);
-    answersContainer.appendChild(answerContainer);
+    let oneAnswerContainer = createOneAnswerContainer();
+    let input = createOneAnswerInput(type,questionNumber,answer.number);
+    let label = createOneLabelForInput(questionNumber,answer.number,answer.text);
+    answersContainer = packageAnswer(answersContainer,oneAnswerContainer,input,label);
   })
 
   return answersContainer;
 }
 
-function generateCheckboxAnswer(answers,questionNumber){
-  var answersContainer = document.createElement('div');
-  answersContainer.setAttribute('class','answersContainer');
-
-  answers.forEach(answer=>{
-    var answerContainer = document.createElement('div');
-    answerContainer.setAttribute('class','answerContainer');
-
-    let checkbox = document.createElement('input');
-    checkbox.setAttribute('type','checkbox');
-    checkbox.setAttribute('id','question_'+questionNumber+'_answer_'+answer.number);
-
-
-    let label = document.createElement('label');
-    label.setAttribute('class','answer');
-    label.setAttribute('for','question_'+questionNumber+'_answer_'+answer.number);
-    label.innerHTML = answer.text;
-
-    answerContainer.appendChild(checkbox);
-    answerContainer.appendChild(label);
-    answersContainer.appendChild(answerContainer);
-  })
+function packageAnswer(answersContainer,oneAnswerContainer,input,label){
+  oneAnswerContainer.appendChild(input);
+  oneAnswerContainer.appendChild(label);
+  answersContainer.appendChild(oneAnswerContainer);
   return answersContainer;
+}
+
+function createOneLabelForInput(questionNumber,answerNumber,answerText){
+  let label = document.createElement('label');
+  label.setAttribute('class','answer');
+  label.setAttribute('for','question_'+questionNumber+'_answer_'+answerNumber);
+  label.innerHTML = answerText;
+  return label;
+}
+
+function createOneAnswerInput(type,questionNumber,answerNumber){
+  let input = document.createElement('input');
+  input.setAttribute('type',type);
+  input.setAttribute('name','question_'+questionNumber);
+  input.setAttribute('id','question_'+questionNumber+'_answer_'+answerNumber);
+  return input;
+}
+
+function createOneAnswerContainer(){
+  var answerContainer = document.createElement('div');
+  answerContainer.setAttribute('class','answerContainer');
+  return answerContainer;
 }
 
 function generateQuestionHtml(question){
@@ -113,7 +105,6 @@ function numberOfTrueAnswers(question){
       countOfTrueAnswers++;
     }
   })
-  console.log('countOfTrueAnswers',countOfTrueAnswers);
   return countOfTrueAnswers;
 }
 

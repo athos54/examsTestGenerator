@@ -12,8 +12,7 @@ if(isBrowserSupported == true){
 let waitingForFinish = setInterval(()=>{
   if(file.isProcessFinished()==true){
     let questions = file.getQuestions();
-    console.log('Here you are the questions object');
-    console.log(questions);
+
     var test = new Test(questions);
     test.generateAllQuestions(questions);
     file.deleteFileForm();
