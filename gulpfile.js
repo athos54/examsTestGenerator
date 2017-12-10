@@ -34,9 +34,7 @@ gulp.task('less',function(){
 });
 
 gulp.task('watch',function(){
-
   livereload.listen();
-
   gulp.watch('src/*.js',['browserify']);
   gulp.watch('src/less/*.less',['less']);
 });
