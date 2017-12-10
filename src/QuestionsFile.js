@@ -17,10 +17,10 @@ function QuestionsFile(){
   }
 
   QuestionsFile.prototype.deleteFileForm = function (){
-    body = document.body
-    label = document.querySelector('#filelabel');
-    input = document.querySelector('#fileinput');
-    button = document.querySelector('#filebutton');
+    let body = document.body
+    let label = document.querySelector('#filelabel');
+    let input = document.querySelector('#fileinput');
+    let button = document.querySelector('#filebutton');
     body.removeChild(label);
     body.removeChild(input);
     body.removeChild(button);
