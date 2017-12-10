@@ -1,0 +1,35 @@
+{
+  "name": "examstestgenerator",
+  "version": "1.0.0",
+  "description": "This small project is for learn solid programing thins. All comments will be welcome. Pull requests too.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/athos54/examsTestGenerator.git"
+  },
+  "author": "Athos Orío Choperena",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/athos54/examsTestGenerator/issues"
+  },
+  "homepage": "https://github.com/athos54/examsTestGenerator#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-less": "^3.3.2",
+    "gulp-livereload": "^3.8.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^4.3.11"
+  },
+  "dependencies": {
+    "gulp-uglifycss": "^1.0.9"
+  }
+}
